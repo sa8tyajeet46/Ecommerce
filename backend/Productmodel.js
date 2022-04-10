@@ -16,7 +16,7 @@ const productSchema=new mongoose.Schema({
         type:Number,
         default:0
     },
-    Price:{
+    price:{
         type:Number,
         requied:[true,"add price"],
         maxlength:[8,"maxlength can't exceed 8 characters"]

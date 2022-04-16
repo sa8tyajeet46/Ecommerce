@@ -14,9 +14,14 @@ app.use(cors())
 app.use(cookieParser());
 const url="mongodb://localhost:27017/Ecommerce";
 mongoose.connect(url).then(()=>console.log("db connected")).catch((err)=>console.log(err));
-const isauthenticateduser=async (req,res,next)=>{
-   const {token}=req.cookies;
-   console.log(token);
+const checkRole=(...roles)=>{
+   return (req,res,next)=>{
+      if(!roles.includes(req.user.role))
+      {
+         return res.status(403).send({"msg":`${req.user.role} cannot use this route`,"sucess":"false"});
+      }
+      next();
+   }
 }
 const getJWTToken=async(data)=>{
    const token=await jwt.sign({id:data._id},"secret",{ expiresIn: '5d'});
@@ -45,7 +50,7 @@ const isauthenticated=async(req,res,next)=>{
    req.user =await auth.findById(decodedData.id);
    next();
 }
-app.post('/api/products/new',(req,res)=>{
+app.post('/api/products/new',isauthenticated,checkRole("admin"),(req,res)=>{
     const product=req.body;
     Products.create(product,(err,data)=>{
        if(err)
@@ -54,7 +59,7 @@ app.post('/api/products/new',(req,res)=>{
        res.status(201).send(data);
     })
 })
-app.get('/api/products',isauthenticated,async (req,res)=>{
+app.get('/api/products',async (req,res)=>{
    const product=await new apiFeaturekey(Products.find(),req.query).search().query;
         if(product)
   {      res.status(200).send({"sucess":"true","product":product});
@@ -115,7 +120,7 @@ else{
 }
    
 })
-app.get('/api/delete/:id',(req,res)=>{
+app.get('/api/delete/:id',isauthenticated,checkRole("admin"),(req,res)=>{
     Products.deleteOne({"_id":req.params.id},(err,data)=>{
      if(err)
      res.status(500).send("product not found");
@@ -123,7 +128,7 @@ app.get('/api/delete/:id',(req,res)=>{
      res.status(200).send(data);
     })
  })
- app.put('/api/update/:id',(req,res)=>{
+ app.put('/api/update/:id',isauthenticated,checkRole("admin"),(req,res)=>{
     Products.updateOne({"_id":req.params.id},{$set:req.body},(err,data)=>{
      if(err)
      res.status(500).send({"sucess":"false"});

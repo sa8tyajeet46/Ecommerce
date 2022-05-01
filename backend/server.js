@@ -3,16 +3,20 @@ const { default: mongoose } = require('mongoose');
 const cors=require('cors');
 const auth=require('./Usermodel');
 const Products=require("./Productmodel");
+const Orders=require("./orderSchema");
 const apiFeaturekey = require('./ApiFeatureKey');
 const bcrypt = require('bcryptjs/dist/bcrypt');
 const jwt = require('jsonwebtoken');
 const app=express();
 const cookieParser=require('cookie-parser');
 const port=process.env.PORT || 8000;
+const path=require("path")
 app.use(express.json());
 app.use(cors())
 app.use(cookieParser());
-const url="mongodb://localhost:27017/Ecommerce";
+app.use(express.static(path.join(__dirname,"../frontend/build")));
+const url="mongodb://satyajeet:TeriMaKiChut@cluster0-shard-00-00.t68qz.mongodb.net:27017,cluster0-shard-00-01.t68qz.mongodb.net:27017,cluster0-shard-00-02.t68qz.mongodb.net:27017/Ecommerce?ssl=true&replicaSet=atlas-ii87ee-shard-0&authSource=admin&retryWrites=true&w=majority";
+
 mongoose.connect(url).then(()=>console.log("db connected")).catch((err)=>console.log(err));
 const checkRole=(...roles)=>{
    return (req,res,next)=>{
@@ -44,12 +48,25 @@ const isauthenticated=async(req,res,next)=>{
    const {token}=req.cookies;
   // console.log(token);
    if(!token)
-   return res.end();
+   return res.status(404).send({"sucess":"false"});
   //console.log(token);
    const decodedData=jwt.verify(token,"secret");
    req.user =await auth.findById(decodedData.id);
    next();
 }
+app.post('/order/new',(req,res)=>{
+   const order=req.body;
+   Orders.create(order,(err,data)=>{
+      if(err)
+      res.status(500).send(err);
+      else
+      res.status(201).send(data);
+   })
+})
+app.get('/me',isauthenticated,(req,res)=>{
+   if(req.user)
+   res.status(200).send({"sucess":"true","user":req.user});
+})
 app.post('/api/products/new',isauthenticated,checkRole("admin"),(req,res)=>{
     const product=req.body;
     Products.create(product,(err,data)=>{

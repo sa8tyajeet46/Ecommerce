@@ -5,14 +5,12 @@ const validator=require("validator");
 const authSchema=new mongoose.Schema({
     name:{
         type:String,
-        maxlength:[10,"character shouldnt exceed 10"],
         minlength:[4,"character must be more than 4"],
         required:[true,"name cannot be mty"]        
     },
     password:{
         type:String,
         select:false,
-        maxlength:[10,"character shouldnt exceed 10"],
         minlength:[4,"character must be more than 4"],
         required:true
     },

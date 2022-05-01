@@ -21,6 +21,7 @@ export  const productReducer=(state={products:[]},action)=>{
                ...state,
                error:null
             }
+        
         default:
             return state   
     }

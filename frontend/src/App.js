@@ -18,7 +18,7 @@ const {loading,products,error}=useSelector(state=>state.productReducer)
           setKeyword(e.target.value);
         }}></input></form>
     <div className="grid grid-cols-1 gap-20 mx-10 my-10 md:grid-cols-3 ">
-    {products.map((product)=>(<Card name={product.name} price={product.price} review={product.reviews.length} rating={products.rating}></Card>))}
+    {products.map((product)=>(<Card name={product.name} price={product.price} review={product.numofrating} rating={product.rating} id={product._id} image={product.images[0].url}></Card>))}
     </div>
     <Footer></Footer>
     </div>:<div>{error}</div>:<div>Loading</div>}

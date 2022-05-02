@@ -1,0 +1,14 @@
+export  const LOGIN_REQUEST="LOGIN_REQUEST";
+export  const LOGIN_SUCESS="LOGIN_SUCESS";
+export  const LOGIN_FAIL="LOGIN_FAIL";
+
+export  const RESISTER_REQUEST="RESISTER_REQUEST";
+export  const RESISTER_SUCESS="RESISTER_SUCESS";
+export  const RESISTER_FAIL="RESISTER_FAIL";
+
+export  const LOAD_REQUEST="LOAD_REQUEST";
+export  const LOAD_SUCESS="LOAD_SUCESS";
+export  const LOAD_FAIL="LOAD_FAIL";
+
+export  const LOGOUT_FAIL="LOGOUT_FAIL";
+export  const LOGOUT_SUCESS="LOGOUT_SUCESS";
